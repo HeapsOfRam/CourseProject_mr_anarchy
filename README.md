@@ -10,7 +10,7 @@ I've written up [this PDF for my final project proposal](./ryanm14_cs410_final_p
 
 ## Milestone 2: Progress Report
 
-I've written up [this PDF for my progress report(./progress_report.pdf)
+I've written up [this PDF for my progress report](./progress_report.pdf)
 
 ### Technology Review
 
