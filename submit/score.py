@@ -4,7 +4,9 @@ import numpy as nx
 import sys
 from math import*
 from scipy.spatial import distance
-file2 = sys.argv[1];
+#file2 = sys.argv[1];
+file2 = "datasets/{}".format("_".join(sys.argv[1:])).replace(" ", "_").replace("'", "").replace("#", "")
+print(file2)
 def is_number(a):
     # will be True also for 'NaN'
     try:

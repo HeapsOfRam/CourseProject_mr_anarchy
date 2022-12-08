@@ -1,60 +1,65 @@
+# libraries
 library(rtweet)
 library(igraph)
 library(tidyverse)
 library(rjson)
 
-#NUM_TWEETS = 1000
-#NUM_TWEETS = 50000
-NUM_TWEETS = 5000
-#SEARCH_TERM = "#beefban"
-#SEARCH_TERM = "#zelda"
-#FILENAME = "zelda"
-
+# read any command line arguments
 args = commandArgs(trailingOnly=TRUE)
+NUM_TWEETS = 50000
 
+# sanity check
 print(args)
 
-if(length(args) != 1) {
+# ensure proper command line arguments have been supplied
+if(length(args) == 0) {
     stop("Please supply your search time as an argument!")
 }
 
-#SEARCH_TERM = "#" + args[0]
-FILENAME = args[1]
-SEARCH_TERM = paste("#", args[1], sep = "")
+# get filename and search term
+FILENAME = paste(args, collapse = "_")
+SEARCH_TERM = paste(args, collapse = " ")
 
+FILENAME = gsub(" ", "_", FILENAME)
+FILENAME = gsub("'", "", FILENAME)
+FILENAME = gsub("#", "", FILENAME)
+
+# sanity check
 print(paste("filename...", FILENAME, sep = ""))
 print(paste("searching for term...", SEARCH_TERM, sep = ""))
 
+# read in credentials
 json_file = "../secret/twitter_creds.json"
 json_data = fromJSON(readLines(json_file))
 
-##CREO EL TOKEN EN BASE A MI APLICACIÓN EN TWITTER (https://developer.twitter.com/en/apps)
+# create token for twitter api
 create_token(
   app = json_data$app_name,
   consumer_key = json_data$api_key,
   consumer_secret = json_data$api_key_secret,
   access_token = json_data$access_token,
-  access_secret = json_data$access_token_secret 
+  access_secret = json_data$access_token_secret
 ) -> twitter_token
 
-#auth <- rtweet_app()
+request_complete = FALSE
 
-#BAJO LOS TWEETS
-#tweets.df <- search_tweets("search", n=NUM_TWEETS,token=twitter_token,retryonratelimit = TRUE)
-#tweets.df <- search_tweets("search", n=250000,token=auth,retryonratelimit = TRUE)
+while(!request_complete){
+    tryCatch({
+        # search for tweets matching term
+        tweets.df <- search_tweets(SEARCH_TERM, n=NUM_TWEETS,token=twitter_token,retryonratelimit = TRUE)
 
-tweets.df <- search_tweets2(SEARCH_TERM, n=NUM_TWEETS,token=twitter_token,retryonratelimit = TRUE)
-#just.tweets.df <- search_tweets(SEARCH_TERM, n=NUM_TWEETS,token=twitter_token,retryonratelimit = TRUE)
-#users.df <- users_data(just.tweets.df)
+        # create network of tweets
+        net <- network_graph(tweets.df, e = c("retweet"))
 
-#tweets.df <- cbind(users.df, just.tweets.df)
-#tweets.df <- cbind(just.tweets.df, users.df)
+        request_complete = TRUE
+    }, error = function(e) {
+        print("error encountered:")
+        print(e)
+        print("retrying...")
+    }, finally = {
+        # save the rdata
+        save.image(paste("datasets/", FILENAME, ".RData", sep = ""))
+    })
+}
 
 
-#CREO EL GRAFO DE RETWEETS
-net = network_graph(tweets.df, e = c("retweet"))
-
-#save.image("datasets/filename.RData")
-#save.image("datasets/zelda.RData")
-save.image(paste("datasets/", FILENAME, ".RData", sep = ""))
-#GENERO EL LAYOUT (PARA VISUALIZARLO)

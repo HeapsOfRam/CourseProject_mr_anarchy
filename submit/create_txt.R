@@ -3,9 +3,20 @@ library("igraph")
 library("textclean")
 library("rtweet")
 
+print("create text")
+
 args = commandArgs(trailingOnly=TRUE)
-fileName = args[1]
+#fileName = args[1]
+fileName = paste(args, collapse = "_")
+fileName = paste("datasets/", fileName, sep = "")
+fileName = gsub(" ", "_", fileName)
+fileName = gsub("'", "", fileName)
+fileName = gsub("#", "", fileName)
+
+print(fileName)
+#load(paste0("datasets/", fileName,".RData"))
 load(paste0(fileName,".RData"))
+
 
 users.df = users_data(tweets.df)
 tweets.df = cbind(tweets.df, users.df)
@@ -113,3 +124,4 @@ for(is in 1:length(text)){
   write(text[is], file=fileConn,append=TRUE)
 }
 close(fileConn)
+print("created text")

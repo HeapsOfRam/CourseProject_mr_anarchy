@@ -1,6 +1,6 @@
 #!/bin/bash
 
-search_term=$1
+search_term=$@
 
 Rscript create_graph.R $search_term
-./calculate datasets/$search_term
+./calculate $search_term
