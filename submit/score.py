@@ -1,12 +1,13 @@
-
+# this file is slightly modified from source files at https://github.com/jmanuoz/Measuring-controversy-in-Social-Networks-through-NLP
 from scipy import spatial
 import numpy as nx
 import sys
 from math import*
 from scipy.spatial import distance
-#file2 = sys.argv[1];
+
 file2 = "datasets/{}".format("_".join(sys.argv[1:])).replace(" ", "_").replace("'", "").replace("#", "")
 print(file2)
+
 def is_number(a):
     # will be True also for 'NaN'
     try:
@@ -20,7 +21,7 @@ f = open(file2+"-C1-vec.txt", "r", encoding = "ISO-8859-1")
 
 distances = list()
 a = 0
-for x in f:   
+for x in f:
     preEmb = x.split(' ')
     emb = preEmb[(len(preEmb)-201):(len(preEmb)-1)]
     if has_nostrings(emb):
@@ -35,7 +36,7 @@ f = open(file2+"-C2-vec.txt", "r", encoding = "ISO-8859-1")
 
 distances = list()
 a = 0
-for x in f:   
+for x in f:
     preEmb = x.split(' ')
     emb = preEmb[(len(preEmb)-201):(len(preEmb)-1)]
     if has_nostrings(emb):

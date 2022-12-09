@@ -1,3 +1,5 @@
+# this file is slightly modified from source files at https://github.com/jmanuoz/Measuring-controversy-in-Social-Networks-through-NLP
+
 # libraries
 library(rtweet)
 library(igraph)

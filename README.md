@@ -1,4 +1,4 @@
-# Controversial Topic Extraction
+# Automatic Controversy Detection
 
 Final project for CS410: Text Information Systems
 
@@ -22,7 +22,7 @@ Unfortunately, I wasn't able to quite accomplish what I had in mind for this pro
 Most of it ended up being taken from prior art, as mentioned [in the Sources section](#sources).
 Instead of providing an interface where a user provides a generic topic thread, and detecting controversy there, I instead ask the user for a search query (which I refer to as a "topic" later in this document), and the script then pulls down the most recent Tweets that match that query, to detect if the recent discussion seems controversial or not.
 
-Please see [the Documentation header in this README](#documentation) for details around setup, usage, and general goals and results of the project.
+Please see [the Documentation header in this README](#documentation) for details around setup, usage, and general goals and results of the project, including [the video for the final project submission under the Video header](#video).
 
 ## Documentation
 
@@ -132,6 +132,8 @@ Linux localhost.localdomain 6.0.10-100.fc35.x86_64 #1 SMP PREEMPT_DYNAMIC Sat No
 
 ##### Install
 
+NOTE: this step should only be necessary for running locally.
+
 The next important piece after getting the proper environment is to install the requisite libraries.
 The required libraries for R are provided in [the `requirements.R` file](submit/requirements.R), and the required python libraries are provided in [the `requirements.txt` file](submit/requirements.txt).
 To install, you can run the following commands:
@@ -162,7 +164,7 @@ tag=YOUR_DESIRED_TAG
 topic=YOUR_DESIRED_SEARCH_TOPIC
 
 docker build -t $tag .
-docker run -it --env QUERY_TERM=$topic --name ControversyDetector $tag
+docker run -it --env QUERY_TERM="${topic}" --name ControversyDetector $tag
 ```
 
 Or, if you want to invoke the `run_detector.sh` script directly, you will need to provide the tag and the topic as command line arguments:
@@ -196,6 +198,24 @@ Then, it will call [the included `calculate` script](submit/calculate).
 This `calculate` script will run [this next R script to generate the training file](submit/create_txt.R).
 After that is done, it will pass the result into the `fasttext` executable (which is also included in this repository) to generate the word vectors, which can be used to detect controversy.
 The final step that the `calculate` script performs is taking the results of the `fasttext` executable and providing them to [the python `score.py` scoring file](submit/score.py), which will generate the overall controversy score, between [0,1].
+
+### Possible Issues
+
+I have added retry logic into the code for the most common error case I encountered.
+I have noticed for high velocity topics, the network creation step seems to fail as a result of the shape of the dataframe extracted from the Twitter API.
+My hypothesis is that this is specifically for those high velocity topics, since downloading the tweets takes some time and new tweets may come in during that process.
+To mitigate this, I have added retry logic that will continually retry until either interrupted by the user or the network graph is created successfully.
+An error message is logged when this happens, but the execution of the code will continue.
+
+Other errors I have seen is when dealing with special characters.
+The manipulation of the file handles is brittle and happens in multiple places, which I know is not ideal.
+Please try to avoid special characters outside of hashtag (`#`), apostrophe (aka single quote, `'`), and space.
+Enclose your search queries in double quotes when possible, ie `"Xenoblade Chronicles"`.
+This is also important in the bash scripts that call the other scripts.
+
+### Video
+
+Please see the video I shot describing the code and its running [on the UIUC Mediaspace site](https://mediaspace.illinois.edu/media/t/1_fbfr5ifp).
 
 ## Sources
 
