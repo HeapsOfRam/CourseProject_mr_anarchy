@@ -6,14 +6,14 @@ library(rjson)
 
 # read any command line arguments
 args = commandArgs(trailingOnly=TRUE)
-NUM_TWEETS = 50000
+NUM_TWEETS = 1000
 
 # sanity check
 print(args)
 
 # ensure proper command line arguments have been supplied
 if(length(args) == 0) {
-    stop("Please supply your search time as an argument!")
+    stop("Please supply your search term as an argument!")
 }
 
 # get filename and search term
@@ -29,7 +29,7 @@ print(paste("filename...", FILENAME, sep = ""))
 print(paste("searching for term...", SEARCH_TERM, sep = ""))
 
 # read in credentials
-json_file = "../secret/twitter_creds.json"
+json_file = "./secret/twitter_creds.json"
 json_data = fromJSON(readLines(json_file))
 
 # create token for twitter api
@@ -61,5 +61,3 @@ while(!request_complete){
         save.image(paste("datasets/", FILENAME, ".RData", sep = ""))
     })
 }
-
-

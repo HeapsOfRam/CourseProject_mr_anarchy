@@ -1,2 +1,6 @@
 secret/
 datasets/
+base_image/
+
+bakreq.R
+dockback
