@@ -92,6 +92,10 @@ The `access_token` and `access_token` had to be generated in the Developer Porta
 As briefly mentioned, at some point you will also need to create a specific development app/project.
 I called my `tis_controversy_detection`.
 
+I wanted to upload a sample dataset to make this easier, so that this step could be skipped and the latter files could be run independently of the `create_graph.R` file.
+However, it does seem like this data is subject to some privacy policies, so I am a bit concerned with providing that information.
+Please reach out to me directly if I can help with getting access, or if I can provide some assistance getting data (for grading/peer review purposes only).
+
 #### Environment Setup
 
 ##### Environment
